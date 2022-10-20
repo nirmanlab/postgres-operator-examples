@@ -1,0 +1,32 @@
+bases:
+  - ../../default
+
+patches:
+  - target:
+      kind: Deployment
+      name: pgo
+    patch: |-
+      - op: add
+        path: /spec/template/spec/affinity
+        value:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: env
+                      operator: In
+                      values:
+                        - prod
+                    - key: app
+                      operator: In
+                      values:
+                        - app
+      - op: add
+        path: /spec/template/spec/tolerations
+        value:
+          - key: app
+            operator: Equal
+            value: app
+          - key: env
+            operator: Equal
+            value: prod
